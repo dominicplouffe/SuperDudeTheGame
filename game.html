@@ -1,0 +1,49 @@
+<html>
+    <head>
+        <title>Test Game</title>
+
+        <meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+        <link href='https://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet' type='text/css'>
+        <link href='game.css' rel='stylesheet' type='text/css'>
+    </head>
+
+    <boby>
+
+        <div id="box">
+            <div id="player"><img src="images/icon.png" id="player_image"></div>
+            <button id="start_button">Start Game</button>
+
+            <div id="points_counter">
+                <span>Points</span>
+                <span id="num_points">0</span>&nbsp;
+            </div>
+        </div>
+
+        <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
+        <script src="mobile.js"></script>
+        <script src="jquery.rotate.min.js"></script>
+
+        <script src="ui_element.js"></script>
+        <script src="game.js"></script>
+
+        <script>
+
+            var LEFT = 37;
+            var UP = 38;
+            var RIGHT = 39;
+            var DOWN = 40;
+
+            var game_instance = null;
+
+            window.onload = function(e) {
+                game_instance = new game();
+            }
+
+        </script>
+    </body>
+
+
+</html>
