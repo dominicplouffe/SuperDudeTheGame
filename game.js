@@ -17,14 +17,14 @@ function game() {
         if (this.in_jump) {
             this.player._do_jump();
         } else {
-            this.player.fall();    
+            this.player.fall();
         }
 
         if (g.pipes.length > 0) {
             this.move_pipes();
 
             var last_pipe = this.pipes[this.pipes.length-1];
-            if (last_pipe[0].left() == this.box.width() - (last_pipe[0].width() + this.horizontal_space)) {
+            if (last_pipe[0].left() == this.box.width() - (last_pipe[0].width() + this.horizontal_space + 1)) {
                 this.insert_pipe();
             }
         }
@@ -44,7 +44,13 @@ function game() {
         var left = g.box.width() + 1;
 
         //Down Pipe
-        var pipe_height = 50 + Math.floor((Math.random() * 100) + 1);
+        var up_down_max = this.box.height() / 2;
+        if (g.pipes.length > 0){
+            up_down_max = g.pipes[g.pipes.length-1][0].top() * 0.2;
+        }
+        
+
+        var pipe_height = 50 + Math.floor((Math.random() * up_down_max) + 1);
         var pipe_down = new ui_element($('#' + pipe_id_down), 0, 0, pipe_height, 60, g.zIndex, g);
         var top = g.box.height() - pipe_down.height();
         pipe_down._el.css('left', left + 'px');
@@ -113,8 +119,11 @@ function game() {
             pipe_down.counted = true;
             this.points += 1;
             this.set_points(this.points);
+
+            this.level = parseInt(this.points / this.points_per_level, 10) + 1;
+            this.pipe_move_rate = this.level;
         }
-    }
+    };
 
     this.is_game_over = function() {
         if (g.player.top() >= g.box.height() - g.player.height() - 1) {
@@ -130,12 +139,14 @@ function game() {
             clearInterval(this.game_interval_id);
             $('#start_button').show();
         }
-    }
+    };
 
     this.set_points = function(points) {
         this.points = points;
         $('#num_points').html(points);
-    }
+
+
+    };
 
     this.start_game = function() {
         $('#start_button').hide();
@@ -144,7 +155,7 @@ function game() {
         this.pipes = [];
         this.in_jump = false;
         this.jump_start = null;
-        this.player = new ui_element($('#player'), 115, 75, '10%', '10%', 3, this);
+        this.player = new ui_element($('#player'), 115, 75, 30, 40, 3, this);
 
         this.game_interval_id = setInterval(function() { game_instance.animate();}, 10);
         this.game_over = false;
@@ -157,9 +168,12 @@ function game() {
     this.vertical_space = 80;
     this.horizontal_space = 100;
     this.player_give = 10;
-    this.rise_rate = 5;
+    this.rise_rate = 2;
     this.fall_rate = 1;
     this.pipe_move_rate = 1;
+    this.jump_height = 40;
+    this.level = 1;
+    this.points_per_level = 10;
 
 
     this.game_interval_id = null;
@@ -172,7 +186,7 @@ function game() {
     this.box = new ui_element($('#box'), 0, 0, '100%', '100%', 0, this);
     this.background = new ui_element($('#background'), 0, 0, '100%', '100%', 1, this);
     this.background2 = new ui_element($('#background2'), 0, 1100, 250, 550, 2, this);
-    this.player = new ui_element($('#player'), 115, 75, '10%', '10%', 3, this);
+    this.player = new ui_element($('#player'), 115, 75, 30, 40, 3, this);
 
     this.barrier = this.get_barrier(this.box, this.player);
     this.in_jump = false;

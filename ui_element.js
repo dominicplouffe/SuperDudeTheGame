@@ -77,16 +77,10 @@ function ui_element(el, top, left, height, width, zIndex, game) {
         if (!this._game.in_jump) {
             this._game.in_jump = true;
             this._game.jump_start = this._game.player.top();
-            
-            var g = this._game;
-
-            // setTimeout(function() { g.player._do_jump(); }, 1);
         }
     }
 
     this._do_jump = function() {
-
-        console.log('jumping');
 
         this._game.player.move_up();
         var g = this._game;
@@ -94,7 +88,7 @@ function ui_element(el, top, left, height, width, zIndex, game) {
         if (this._game.player.top() < 10) {
             this._game.in_jump = false;
             this._game.jump_start = null;
-        } else if (this._game.player.top() > this._game.jump_start - 40) {
+        } else if (this._game.player.top() > this._game.jump_start - this._game.jump_height) {
             
         } else {
             this._game.in_jump = false;

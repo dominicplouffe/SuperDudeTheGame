@@ -1,11 +1,25 @@
 #player_image {
-    height: 100%;
+    height: 30px;
     width: 100%;
 }
 
+.aspectwrapper {
+width: 100vw; 
+    height: 56.25vw; /* height:width ratio = 9/16 = .5625  */
+    background: pink;
+    max-height: 100vh;
+    max-width: 177.78vh; /* 16/9 = 1.778 */
+    margin: auto;
+    position: absolute;
+    top:0;bottom:0; /* vertical center */
+    left:0;right:0; /* horizontal center */
+}
+
 #box {
+    position: absolute;
     background-image: url(http://i.imgur.com/HwvK2FJ.png);
     background-size:cover;
+    top: 0; bottom: 0; right: 0; left: 0;
 }
 
 #background_img {
