@@ -17,7 +17,7 @@ function game() {
         if (this.in_jump) {
             this.player._do_jump();
         } else {
-            this.player.fall();
+            //this.player.fall();
         }
 
         if (g.pipes.length > 0) {
@@ -48,7 +48,7 @@ function game() {
         //Down Pipe
         var up_down_max = this.box.height() / 2;
         if (g.pipes.length > 0){
-            up_down_max = g.pipes[g.pipes.length-1][0].top() * 0.5;
+            up_down_max = g.pipes[g.pipes.length-1][0].top(); // * 0.5;
         }
         
         var pipe_height = 50 + Math.floor((Math.random() * (up_down_max - 26)) + 1);
@@ -89,7 +89,7 @@ function game() {
             
 
             if (left < 0 - pipe[0].width()) {
-                var pipe = this.pipes.shift();
+                pipe = this.pipes.shift();
                 var pipe_up = pipe[0]._el[0];
                 var pipe_down = pipe[1]._el[0];
                 var space = pipe[2]._el[0];
@@ -149,9 +149,10 @@ function game() {
             if (space.coin) {
                 space.coin = false;
                 space._el.empty();
-                
+
                 this.coins += 1;
-                this.set_coins(this.coins)
+                this.set_coins(this.coins);
+                this.sounds.coins.play();
             }
         }
     };
@@ -229,7 +230,7 @@ function game() {
     this.rise_rate = 2;
     this.fall_rate = 1;
     this.pipe_move_rate = 1;
-    this.jump_height = 40;
+    this.jump_height = 20;
     this.level = 1;
     this.points_per_level = 10;
 
@@ -238,7 +239,11 @@ function game() {
     this.coin_interval_id = null;
     this.game_over = true;
     this.points = 0;
-    
+
+    //SOUND
+    this.sounds = {
+        'coins': new Audio('sounds/coin.wav'),
+    };
 
     var g = this;
 
@@ -259,16 +264,25 @@ function game() {
             g.player.jump();
         });
     } else {
-        // this.box._el.on('click',function (e){
-        //     if (!g.game_over){
-        //         g.player.jump();
-        //     }
-        // });
+        $('body').keydown(function(e) {
+            if (!g.game_over){
+                if (e.keyCode == UP) {
+                    g.player.jump(UP);
+                } else if (e.keyCode == DOWN) {
+                    g.player.jump(DOWN);
+                }
+            }
+        });
 
         $('.click_box').on('click', function(e) {
             var is_left = $(this).hasClass('left');
             if (!g.game_over){
-                g.player.jump();
+                if (is_left) {
+                    g.player.jump(UP);
+                } else {
+                    g.player.jump(DOWN);
+                }
+                
             }
         });
     }
