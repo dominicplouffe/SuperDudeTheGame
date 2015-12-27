@@ -39,8 +39,7 @@ function game() {
         var space_id = 'space' + g.pipe_count;
         var html = '<div class="in_game_element" id="' + pipe_id_down + '"><img src="images/pipe_end.png" /><img src="images/pipe.png" class="pipe_image" id="inner_' + pipe_id_down + '" /></div>';
         html += '<div class="in_game_element" id="' + pipe_id_up + '"><img src="images/pipe_end.png" /><img src="images/pipe.png" class="pipe_image" id="inner_' + pipe_id_up + '" /></div>';
-        html += '<div class="in_game_element" id="' + space_id + '">';
-        html += '<div class="coin"></div></div>';
+        html += '<div class="in_game_element" id="' + space_id + '"></div>';
 
         g.box._el.append(html);
 
@@ -71,14 +70,12 @@ function game() {
         var space_height = this.box.height() - pipe_up.height() - pipe_down.height();
         var space = new ui_element($('#' + space_id), pipe_height - 26, 0, space_height, 60, g.zIndex, g);
         space._el.css('left', left + 'px');
-
-        space.coin = true;
+        this.add_objects_to_space(space);
         
         g.pipe_count += 1;
         g.zIndex += 1;
         g.pipes.push([pipe_down, pipe_up, space]);
-
-    }
+    };
 
     this.move_pipes = function() {
         for (var i = 0; i < this.pipes.length; i++) {
@@ -150,9 +147,11 @@ function game() {
 
         if (player_dim.right >= space_dim.left) {
             if (space.coin) {
-                console.log('COIN');
                 space.coin = false;
                 space._el.empty();
+                
+                this.coins += 1;
+                this.set_coins(this.coins)
             }
         }
     };
@@ -180,6 +179,11 @@ function game() {
         $('#num_points').html(points);
     };
 
+    this.set_coins = function(coins) {
+        this.coins = coins;
+        $('#num_coins').html(coins);
+    };
+
     this.animate_coin = function() {
         var coins = $('.coin');
 
@@ -187,6 +191,15 @@ function game() {
             var coin = $(coins[i]);
             var background_pos = parseInt(coin.css('background-position'), 10) + 50;
             coin.css('background-position', background_pos + 'px');
+        }
+    };
+
+    this.add_objects_to_space = function(space) {
+        random_val = Math.floor(Math.random() * 4);
+
+        if (random_val === 1) {
+            space._el.html('<div class="coin"></div>');
+            space.coin = true;
         }
     };
 
@@ -204,6 +217,7 @@ function game() {
         this.coin_interval_id = setInterval(function() { game_instance.animate_coin();}, 100);
         this.game_over = false;
         this.set_points(0);
+        this.set_coins(0);
 
         this.insert_pipe();
     };

@@ -48,14 +48,28 @@ width: 100vw;
     z-index: 9999;
 }
 
-#points_counter {   
-    font-family: 'Press Start 2P', cursive;
-    position: absolute;
-    color: #ECECEC;
-    padding-right: 200px;
-    padding-top: 10px;
+#header {
     width: 100%;
+    z-index: 9999;
+    position:absolute
+}
+
+.counters {
+    font-family: 'Press Start 2P', cursive;
+    color: #ECECEC;
+}
+
+#points_counter {   
+    padding-top: 10px;
+    width: 50%;
     text-align: right;
+    z-index: 9999;
+}
+
+#coins_counter {   
+    padding-top: 10px;
+    width: 50%;
+    text-align: left;
     z-index: 9999;
 }
 
