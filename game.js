@@ -24,7 +24,7 @@ function game() {
             this.move_pipes();
 
             var last_pipe = this.pipes[this.pipes.length-1];
-            if (last_pipe[0].left() == this.box.width() - (last_pipe[0].width() + this.horizontal_space + 1)) {
+            if (this.box.width() - last_pipe[0].left() >= last_pipe[0].width() + this.horizontal_space) {
                 this.insert_pipe();
             }
         }
@@ -36,8 +36,11 @@ function game() {
 
         var pipe_id_down = 'pipe_down' + g.pipe_count;
         var pipe_id_up = 'pipe_up' + g.pipe_count;
-        var html = '<img src="images/pipe.png" class="in_game_element" id="' + pipe_id_down + '" />';
-        html += '<img src="images/pipe.png" class="in_game_element" id="' + pipe_id_up + '" />';
+        var space_id = 'space' + g.pipe_count;
+        var html = '<div class="in_game_element" id="' + pipe_id_down + '"><img src="images/pipe_end.png" /><img src="images/pipe.png" class="pipe_image" id="inner_' + pipe_id_down + '" /></div>';
+        html += '<div class="in_game_element" id="' + pipe_id_up + '"><img src="images/pipe_end.png" /><img src="images/pipe.png" class="pipe_image" id="inner_' + pipe_id_up + '" /></div>';
+        html += '<div class="in_game_element" id="' + space_id + '">';
+        html += '<div class="coin"></div></div>';
 
         g.box._el.append(html);
 
@@ -46,26 +49,34 @@ function game() {
         //Down Pipe
         var up_down_max = this.box.height() / 2;
         if (g.pipes.length > 0){
-            up_down_max = g.pipes[g.pipes.length-1][0].top() * 0.2;
+            up_down_max = g.pipes[g.pipes.length-1][0].top() * 0.5;
         }
         
-
-        var pipe_height = 50 + Math.floor((Math.random() * up_down_max) + 1);
+        var pipe_height = 50 + Math.floor((Math.random() * (up_down_max - 26)) + 1);
         var pipe_down = new ui_element($('#' + pipe_id_down), 0, 0, pipe_height, 60, g.zIndex, g);
+        $('#inner_' + pipe_id_down).css('height', pipe_height);
+
         var top = g.box.height() - pipe_down.height();
         pipe_down._el.css('left', left + 'px');
         pipe_down._el.css('top', top + 'px');
 
         //Up Pipe
         pipe_height = this.box.height() - pipe_height - this.vertical_space;
-        var pipe_up = new ui_element($('#' + pipe_id_up), 0, 0, pipe_height, 60, g.zIndex, g);
+        var pipe_up = new ui_element($('#' + pipe_id_up), 0, 0, pipe_height - 26, 60, g.zIndex, g);
+        $('#inner_' + pipe_id_up).css('height', pipe_height);
         pipe_up._el.css('left', left + 'px');
         pipe_up._el.rotate(180);
-        
 
+        //Space
+        var space_height = this.box.height() - pipe_up.height() - pipe_down.height();
+        var space = new ui_element($('#' + space_id), pipe_height - 26, 0, space_height, 60, g.zIndex, g);
+        space._el.css('left', left + 'px');
+
+        space.coin = true;
+        
         g.pipe_count += 1;
         g.zIndex += 1;
-        g.pipes.push([pipe_down, pipe_up]);
+        g.pipes.push([pipe_down, pipe_up, space]);
 
     }
 
@@ -73,17 +84,25 @@ function game() {
         for (var i = 0; i < this.pipes.length; i++) {
             var pipe = this.pipes[i];
 
-            left = pipe[0].left();
+            var left = pipe[0].left();
             left -= this.pipe_move_rate;
             pipe[0]._el.css('left', left + 'px');
             pipe[1]._el.css('left', left + 'px');
+            pipe[2]._el.css('left', left + 'px');
             
 
             if (left < 0 - pipe[0].width()) {
-                this.pipes.shift();
+                var pipe = this.pipes.shift();
+                var pipe_up = pipe[0]._el[0];
+                var pipe_down = pipe[1]._el[0];
+                var space = pipe[2]._el[0];
+
+                pipe_up.parentNode.removeChild(pipe_up);
+                pipe_down.parentNode.removeChild(pipe_down);
+                space.parentNode.removeChild(space);
             }
         }
-    }
+    };
 
     this.get_dimension = function(el) {
         return {
@@ -91,8 +110,8 @@ function game() {
             'right': el.left() + el.width(),
             'top': el.top(),
             'bottom': el.top() + el.height()
-        }
-    }
+        };
+    };
 
     this.colide_with_pipes = function(player, pipe_down, pipe_up) {
         var player_dim = this.get_dimension(player);
@@ -125,6 +144,19 @@ function game() {
         }
     };
 
+    this.colide_with_space = function(player, space) {
+        var player_dim = this.get_dimension(player);
+        var space_dim = this.get_dimension(space);
+
+        if (player_dim.right >= space_dim.left) {
+            if (space.coin) {
+                console.log('COIN');
+                space.coin = false;
+                space._el.empty();
+            }
+        }
+    };
+
     this.is_game_over = function() {
         if (g.player.top() >= g.box.height() - g.player.height() - 1) {
             this.game_over = true;
@@ -133,10 +165,12 @@ function game() {
         for (var i = 0; i < this.pipes.length; i++) {
             var pipe = this.pipes[i];
             this.colide_with_pipes(this.player, pipe[0], pipe[1]);
+            this.colide_with_space(this.player, pipe[2]);
         }
 
         if (this.game_over) {
             clearInterval(this.game_interval_id);
+            clearInterval(this.coin_interval_id);
             $('#start_button').show();
         }
     };
@@ -144,8 +178,16 @@ function game() {
     this.set_points = function(points) {
         this.points = points;
         $('#num_points').html(points);
+    };
 
+    this.animate_coin = function() {
+        var coins = $('.coin');
 
+        for (var i = 0; i < coins.length; i++) {
+            var coin = $(coins[i]);
+            var background_pos = parseInt(coin.css('background-position'), 10) + 50;
+            coin.css('background-position', background_pos + 'px');
+        }
     };
 
     this.start_game = function() {
@@ -155,17 +197,19 @@ function game() {
         this.pipes = [];
         this.in_jump = false;
         this.jump_start = null;
+        this.pipe_move_rate = 1;
         this.player = new ui_element($('#player'), 115, 75, 30, 40, 3, this);
 
         this.game_interval_id = setInterval(function() { game_instance.animate();}, 10);
+        this.coin_interval_id = setInterval(function() { game_instance.animate_coin();}, 100);
         this.game_over = false;
         this.set_points(0);
 
         this.insert_pipe();
-    }
+    };
 
     //CONFIGURATION OPTIONS
-    this.vertical_space = 80;
+    this.vertical_space = 60;
     this.horizontal_space = 100;
     this.player_give = 10;
     this.rise_rate = 2;
@@ -177,6 +221,7 @@ function game() {
 
 
     this.game_interval_id = null;
+    this.coin_interval_id = null;
     this.game_over = true;
     this.points = 0;
     
@@ -200,7 +245,14 @@ function game() {
             g.player.jump();
         });
     } else {
-        this.box._el.on('click',function (e){
+        // this.box._el.on('click',function (e){
+        //     if (!g.game_over){
+        //         g.player.jump();
+        //     }
+        // });
+
+        $('.click_box').on('click', function(e) {
+            var is_left = $(this).hasClass('left');
             if (!g.game_over){
                 g.player.jump();
             }
