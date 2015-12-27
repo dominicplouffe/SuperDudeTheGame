@@ -9,7 +9,7 @@ function game() {
         barrier.right = el.width() - player.width();
 
         return barrier;
-    }
+    };
 
     
     this.animate = function() {
@@ -30,7 +30,7 @@ function game() {
         }
 
         this.is_game_over();
-    }
+    };
 
     this.insert_pipe = function() {
 
@@ -232,7 +232,7 @@ function game() {
     this.pipe_move_rate = 1;
     this.jump_height = 20;
     this.level = 1;
-    this.points_per_level = 10;
+    this.points_per_level = 30;
 
 
     this.game_interval_id = null;
