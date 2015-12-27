@@ -14,10 +14,17 @@ function game() {
     
     this.animate = function() {
 
+        if (this.is_invisible) {
+            var d = new Date();
+            if (d - this.invisible_start > 10000) {
+                this.is_invisible = false;
+                this.invisible_start = null;
+                this.player._el.removeClass('player_shield');
+            }
+        }
+
         if (this.in_jump) {
             this.player._do_jump();
-        } else {
-            //this.player.fall();
         }
 
         if (g.pipes.length > 0) {
@@ -48,7 +55,7 @@ function game() {
         //Down Pipe
         var up_down_max = this.box.height() / 2;
         if (g.pipes.length > 0){
-            up_down_max = g.pipes[g.pipes.length-1][0].top(); // * 0.5;
+            up_down_max = g.pipes[g.pipes.length-1][0].top() * this.pipe_height_diff;
         }
         
         var pipe_height = 50 + Math.floor((Math.random() * (up_down_max - 26)) + 1);
@@ -111,22 +118,25 @@ function game() {
     };
 
     this.colide_with_pipes = function(player, pipe_down, pipe_up) {
+
         var player_dim = this.get_dimension(player);
         var pipe_down_dim = this.get_dimension(pipe_down);
         var pipe_up_dim = this.get_dimension(pipe_up);
 
-        if (pipe_down_dim.right > player_dim.right) {
-            if (player_dim.right - this.player_give > pipe_down_dim.left) {
-                if (player_dim.bottom - this.player_give > pipe_down_dim.top) {
-                    this.game_over = true;
+        if (!this.is_invisible) {
+            if (pipe_down_dim.right > player_dim.right) {
+                if (player_dim.right - this.player_give > pipe_down_dim.left) {
+                    if (player_dim.bottom - this.player_give > pipe_down_dim.top) {
+                        this.game_over = true;
+                    }
                 }
             }
-        }
 
-        if (pipe_up_dim.right > player_dim.right) {
-            if (player_dim.right - this.player_give > pipe_up_dim.left) {
-                if (player_dim.top < pipe_up_dim.bottom - this.player_give) {
-                    this.game_over = true;
+            if (pipe_up_dim.right > player_dim.right) {
+                if (player_dim.right - this.player_give > pipe_up_dim.left) {
+                    if (player_dim.top < pipe_up_dim.bottom - this.player_give) {
+                        this.game_over = true;
+                    }
                 }
             }
         }
@@ -135,9 +145,7 @@ function game() {
             pipe_down.counted = true;
             this.points += 1;
             this.set_points(this.points);
-
-            this.level = parseInt(this.points / this.points_per_level, 10) + 1;
-            this.pipe_move_rate = this.level;
+            set_level(parseInt(this.points / this.points_per_level, 10) + 1, this);
         }
     };
 
@@ -153,6 +161,15 @@ function game() {
                 this.coins += 1;
                 this.set_coins(this.coins);
                 this.sounds.coins.play();
+            } else if (space.shield) {
+                space.shield = false;
+                space._el.empty();
+
+                this.is_invisible = true;
+                this.sounds.shields.play();
+
+                this.player._el.addClass('player_shield');
+                this.invisible_start = new Date();
             }
         }
     };
@@ -183,6 +200,8 @@ function game() {
     this.set_coins = function(coins) {
         this.coins = coins;
         $('#num_coins').html(coins);
+
+        localStorage.setItem('coins', this.coins);
     };
 
     this.animate_coin = function() {
@@ -201,6 +220,15 @@ function game() {
         if (random_val === 1) {
             space._el.html('<div class="coin"></div>');
             space.coin = true;
+            return;
+        }
+
+        random_val = Math.floor(Math.random() * 30);
+
+        if (random_val == 10) {
+            space._el.html('<div class="shield"></div>');
+            space.shield = true;
+            return;
         }
     };
 
@@ -211,14 +239,19 @@ function game() {
         this.pipes = [];
         this.in_jump = false;
         this.jump_start = null;
-        this.pipe_move_rate = 1;
         this.player = new ui_element($('#player'), 115, 75, 30, 40, 3, this);
 
         this.game_interval_id = setInterval(function() { game_instance.animate();}, 10);
         this.coin_interval_id = setInterval(function() { game_instance.animate_coin();}, 100);
         this.game_over = false;
+        this.level = 0;
+
+        var coins = localStorage.getItem('coins');
+        if (coins === null) coins = 0; else coins = parseInt(coins, 10);
+
+        this.set_coins(coins);
         this.set_points(0);
-        this.set_coins(0);
+        set_level(1, this);
 
         this.insert_pipe();
     };
@@ -227,22 +260,25 @@ function game() {
     this.vertical_space = 60;
     this.horizontal_space = 100;
     this.player_give = 10;
-    this.rise_rate = 2;
-    this.fall_rate = 1;
+    this.rise_rate = 5;
+    this.fall_rate = 5;
     this.pipe_move_rate = 1;
     this.jump_height = 20;
-    this.level = 1;
-    this.points_per_level = 30;
-
+    this.level = 0;
+    this.points_per_level = 10;
+    this.pipe_height_diff = 0.2;
 
     this.game_interval_id = null;
     this.coin_interval_id = null;
     this.game_over = true;
     this.points = 0;
+    this.is_invisible = false;
+    this.invisible_start = null;
 
     //SOUND
     this.sounds = {
         'coins': new Audio('sounds/coin.wav'),
+        'shields': new Audio('sounds/shield.wav'),
     };
 
     var g = this;
@@ -259,33 +295,39 @@ function game() {
     this.zIndex = 10;
     this.pipes = [];
 
-    if ($.browser.mobile) {
-        this.box._el.on('touchend',function (e){
-            g.player.jump();
-        });
-    } else {
-        $('body').keydown(function(e) {
-            if (!g.game_over){
-                if (e.keyCode == UP) {
-                    g.player.jump(UP);
-                } else if (e.keyCode == DOWN) {
-                    g.player.jump(DOWN);
-                }
+    this.box._el.on('touchend',function (e){
+        var is_left = $(this).hasClass('left');
+        if (!g.game_over){
+            if (is_left) {
+                g.player.jump(UP);
+            } else {
+                g.player.jump(DOWN);
             }
-        });
+            
+        }
+    });
+    
+    $('body').keydown(function(e) {
+        if (!g.game_over){
+            if (e.keyCode == UP) {
+                g.player.jump(UP);
+            } else if (e.keyCode == DOWN) {
+                g.player.jump(DOWN);
+            }
+        }
+    });
 
-        $('.click_box').on('click', function(e) {
-            var is_left = $(this).hasClass('left');
-            if (!g.game_over){
-                if (is_left) {
-                    g.player.jump(UP);
-                } else {
-                    g.player.jump(DOWN);
-                }
-                
+    $('.click_box').on('click', function(e) {
+        var is_left = $(this).hasClass('left');
+        if (!g.game_over){
+            if (is_left) {
+                g.player.jump(UP);
+            } else {
+                g.player.jump(DOWN);
             }
-        });
-    }
+            
+        }
+    });
 
     $('#start_button').css('left', (this.box.width() / 2) - (parseInt($('#start_button').css('width'), 10) / 2 ));
     $('#start_button').css('top', (this.box.height() / 2) - (parseInt($('#start_button').css('height'), 10) / 2 ));
