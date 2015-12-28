@@ -57,17 +57,13 @@ function ui_element(el, top, left, height, width, zIndex, game) {
         this._el.css('top', top + 'px');
     };
 
-    //  this.fall = function() {
-    //     if (this._game.in_jump) return;
-    //     var top = parseInt(this._el.css('top'), 10);
-    //     top += this._game.fall_rate;
+    this.shoot = function() {
+        $('#bullet').css('left', this.dimension.right + 'px');
+        $('#bullet').css('top', (this.dimension.top) + 'px');
+        $('#bullet').show();
 
-    //     if (top > this._game.barrier.down) {
-    //         return;
-    //     }
-
-    //     this._el.css('top', top + 'px');
-    // }
+        this._game.shoot = true;
+    };
 
     this.jump = function(direction) {
         if (!this._game.in_jump) {
@@ -80,7 +76,7 @@ function ui_element(el, top, left, height, width, zIndex, game) {
     this.stop_jump = function() {
         this._game.in_jump = false;
         this._game.jump_start = null;
-    }
+    };
 
     this._do_jump = function() {
 

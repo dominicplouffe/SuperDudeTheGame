@@ -27,6 +27,10 @@ function game() {
             this.player._do_jump();
         }
 
+        if (this.shoot) {
+            this.move_bullet();
+        }
+
         if (g.pipes.length > 0) {
             this.move_pipes();
 
@@ -124,19 +128,23 @@ function game() {
         var pipe_up_dim = pipe_up.dimension;
 
         if (!this.is_invisible) {
-            if (pipe_down_dim.left + pipe_down_dim.width > player_dim.left + player_dim.width) {
-                if ((player_dim.left + player_dim.width) - this.player_give > pipe_down_dim.left) {
-                    if (player_dim.bottom - this.player_give > pipe_down_dim.top) {
-                        this.game_over = true;
+            if (!pipe_down.is_blown) {
+                if (pipe_down_dim.left + pipe_down_dim.width > player_dim.left + player_dim.width) {
+                    if ((player_dim.left + player_dim.width) - this.player_give > pipe_down_dim.left) {
+                        if (player_dim.bottom - this.player_give > pipe_down_dim.top) {
+                            this.game_over = true;
+                        }
                     }
                 }
             }
 
-            if (pipe_up_dim.left + pipe_up_dim.width > player_dim.left + player_dim.width) {
-                if ((player_dim.left + player_dim.width) - this.player_give > pipe_up_dim.left) {
-                    if (player_dim.left < (player_dim.left + player_dim.width)) {
-                        if (player_dim.top < pipe_up_dim.bottom - this.player_give) {
-                            this.game_over = true;
+            if (!pipe_up.is_blown) {
+                if (pipe_up_dim.left + pipe_up_dim.width > player_dim.left + player_dim.width) {
+                    if ((player_dim.left + player_dim.width) - this.player_give > pipe_up_dim.left) {
+                        if (player_dim.left < (player_dim.left + player_dim.width)) {
+                            if (player_dim.top < pipe_up_dim.bottom - this.player_give) {
+                                this.game_over = true;
+                            }
                         }
                     }
                 }
@@ -150,6 +158,39 @@ function game() {
             set_level(parseInt(this.points / this.points_per_level, 10) + 1, this);
         }
     };
+
+    this.move_bullet = function() {
+        var bullet = $('#bullet');
+        var bullet_left = parseInt(bullet.css('left'), 10) + 3;
+        bullet.css('left', bullet_left + 'px');
+
+        var bullet_right = bullet_left + parseInt(bullet.css('width'), 10);
+        var bullet_top = parseInt(bullet.css('top'), 10);
+
+        for (var i = 0; i < this.pipes.length; i++) {
+            var pipe = this.pipes[i];
+            var pipe_down = pipe[0];
+            var pipe_up = pipe[1];
+            var pipe_down_dim = pipe_down.dimension;
+            var pipe_up_dim = pipe_up.dimension;
+
+            if (bullet_right >= pipe_up_dim.left && !pipe_up.is_blown) {
+                if (bullet_top < pipe_up_dim.height) {
+                    this.shoot = false;
+                    this.add_explosion(pipe_up);
+                    bullet.hide();
+                }
+            }
+
+            if (bullet_right >= pipe_down_dim.left && !pipe_down.is_blown) {
+                if (bullet_top > pipe_down_dim.top) {
+                    this.shoot = false;
+                    this.add_explosion(pipe_down);
+                    bullet.hide();
+                }
+            }
+        }
+    }
 
     this.colide_with_space = function(player, space) {
         var player_dim = player.dimension;
@@ -168,7 +209,7 @@ function game() {
                 space._el.empty();
 
                 this.is_invisible = true;
-                //this.sounds.shields.play();
+                this.sounds.shields.play();
 
                 this.player._el.addClass('player_shield');
                 this.invisible_start = new Date();
@@ -182,22 +223,34 @@ function game() {
         }
 
         if (this.game_over) {
+            this.set_highscore(this.highscore);
+
             clearInterval(this.game_interval_id);
             clearInterval(this.coin_interval_id);
-            $('#start_button').show();
+
+            $('.outer_info').show();
         }
     };
 
     this.set_points = function(points) {
         this.points = points;
         $('#num_points').html(points);
+
+        if (points > this.highscore) {
+            this.highscore = points;
+        }
     };
 
     this.set_coins = function(coins) {
         this.coins = coins;
         $('#num_coins').html(coins);
 
-        localStorage.setItem('coins', this.coins);
+        localStorage.setItem('coins', coins);
+    };
+
+    this.set_highscore = function(highscore) {
+        $('#num_highscore').html(highscore);
+        localStorage.setItem('highscore', highscore);
     };
 
     this.animate_coin = function() {
@@ -228,8 +281,33 @@ function game() {
         }
     };
 
+    this.animate_explosion = function(el) {
+
+        var g = this;
+        var explosion = $(el._el.children()[0]);
+        var background_pos = parseInt(explosion.css('background-position'), 10) + 64;
+        explosion.css('background-position', background_pos + 'px');        
+
+        if (background_pos / 64 < 15) {
+            setTimeout(function() { g.animate_explosion(el);}, 100);
+        } else {
+            el._el.empty();
+        }
+    };
+
+    this.add_explosion = function(pipe) {
+
+        pipe.is_blown = true;
+        pipe._el.empty();
+        pipe._el.html('<div class="explosion"></div>');
+
+        var g = this;
+
+        setTimeout(function() { g.animate_explosion(pipe);}, 100);
+    };
+
     this.start_game = function() {
-        $('#start_button').hide();
+        $('.outer_info').hide();
         $('.in_game_element').hide();
 
         this.add_debug('starting game');
@@ -248,10 +326,7 @@ function game() {
         this.game_over = false;
         this.level = 0;
 
-        var coins = localStorage.getItem('coins');
-        if (coins === null) coins = 0; else coins = parseInt(coins, 10);
-
-        this.set_coins(coins);
+        this.set_coins(this.coins);
         this.set_points(0);
         set_level(1, this);
 
@@ -280,14 +355,25 @@ function game() {
     this.points_per_level = 10;
     this.pipe_height_diff = 0.2;
 
+    //GAME VARIABLES
     this.game_interval_id = null;
     this.coin_interval_id = null;
     this.game_over = true;
     this.points = 0;
     this.is_invisible = false;
     this.invisible_start = null;
+    this.in_jump = false;
+    this.jump_start = null;
+    this.pipe_count = 0;
+    this.zIndex = 10;
+    this.pipes = [];
 
-    //SOUND
+    this.coins = localStorage.getItem('coins');
+    if (this.coins === null) this.coins = 0; else this.coins = parseInt(this.coins, 10);
+    this.highscore = localStorage.getItem('highscore');
+    if (this.highscore === null) this.highscore = 0; else this.highscore = parseInt(this.highscore, 10);
+
+    //SOUNDS
     this.sounds = {
         'coins': new Audio('sounds/coin.mp3'),
         'shields': new Audio('sounds/shield.wav'),
@@ -295,30 +381,31 @@ function game() {
 
     var g = this;
 
+    //ELEMENTS
     this.box = new ui_element($('#box'), 0, 0, '100%', '100%', 0, this);
     this.background = new ui_element($('#background'), 0, 0, '100%', '100%', 1, this);
     this.background2 = new ui_element($('#background2'), 0, 1100, 250, 550, 2, this);
     this.player = new ui_element($('#player'), 115, 75, 30, 40, 3, this);
-
     this.floor_height = parseInt($('#floor').css('height'), 10);
-
     this.barrier = this.get_barrier(this.box, this.player);
-    this.in_jump = false;
-    this.jump_start = null;
-    this.pipe_count = 0;
-    this.zIndex = 10;
-    this.pipes = [];
+
+    this.set_coins(this.coins);
+    this.set_highscore(this.highscore);
 
     if ($.browser.mobile) {
         $('.click_box').on('touchstart',function (e){
             var is_left = $(this).hasClass('left');
+            var is_right = $(this).hasClass('right-bottom');
             if (!g.game_over){
                 if (is_left) {
                     g.player.jump(DOWN);
-                } else {
+                } else if (is_right) {
                     g.player.jump(UP);
+                } else {
+                    if (!g.shoot) {
+                        g.player.shoot();
+                    }
                 }
-                
             }
         });
 
@@ -335,6 +422,10 @@ function game() {
                     g.player.jump(UP);
                 } else if (e.keyCode == DOWN) {
                     g.player.jump(DOWN);
+                } else if (e.keyCode == SPACE) {
+                    if (!g.shoot) {
+                        g.player.shoot();
+                    }
                 }
             }
         });
@@ -345,9 +436,6 @@ function game() {
             }
         });
     }
-
-    $('#start_button').css('left', (this.box.width() / 2) - (parseInt($('#start_button').css('width'), 10) / 2 ));
-    $('#start_button').css('top', (this.box.height() / 2) - (parseInt($('#start_button').css('height'), 10) / 2 ));
 
     $('#start_button').click(function() {
         g.start_game();

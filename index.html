@@ -15,14 +15,29 @@
         <div class="aspectwrapper">
             <div id="box">
                 <div class="click_box left"></div>
-                <div class="click_box right"></div>
+                <div class="click_box right-top"></div>
+                <div class="click_box right-bottom"></div>
 
-                <div id="super_dude_debug">
-
-                </div>
+                <div id="super_dude_debug"></div>
 
                 <div id="player"><img src="images/icon.png" id="player_image"></div>
-                <button id="start_button">Start Game</button>
+
+                <div id="bullet"></div>
+
+                <div class="outer_info">
+                    <div class="middle_info">
+                        <div class="inner_info">
+
+                            <div id="highscore" class="counters">
+                                <span>Highscore</span>
+                                <span id="num_highscore">0</span>
+                            </div>
+                            <br/>
+                            <button id="start_button" class="button">New Game</button>
+                            <button id="back_button" class="button">Back Home</button>
+                        </div>
+                    </div>
+                </div>
 
                 <table id="header">
                     <tr style="z-index: 999999;">
@@ -30,12 +45,16 @@
                             &nbsp;<span>Coins</span>
                             <span id="num_coins">0</span>
                         </td>
-                        <td class="counters" id="level_counter">
-                            <span>Level</span>
-                            <span id="num_levels">0</span>&nbsp;
+                        <td class="counters" id="points_counter">
+                            <span>Points</span>
+                            <span id="num_points">0</span>&nbsp;
                         </td>
                     </tr>
                 </table>
+
+                <div id="level" class="counters">
+                    Level <span id="num_levels">1</span>
+                </div>
 
                 <div id="floor"></div>
             </div>
@@ -55,6 +74,7 @@
             var UP = 38;
             var RIGHT = 39;
             var DOWN = 40;
+            var SPACE = 32;
 
             var game_instance = null;
 
