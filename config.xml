@@ -29,6 +29,7 @@
     <preference name="fullscreen"                 value="true" />           <!-- all: hides the status bar at the top of the screen -->
     <preference name="stay-in-webview"            value="false" />          <!-- ios: external links should open in the default browser, 'true' would use the webview the app lives in -->
     <preference name="StatusBarOverlaysWebView" value="false" />
+    <preference name="DisallowOverscroll" value="true" />
 
     <gap:plugin name="com.phonegap.plugin.statusbar" />
 
