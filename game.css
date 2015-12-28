@@ -126,4 +126,5 @@
 #super_dude_debug {
     width: 200px; height: 200px; z-index: 9999; border: 1px solid #000; background-color: #FFF;
     position: absolute;
+    display: none;
 }
