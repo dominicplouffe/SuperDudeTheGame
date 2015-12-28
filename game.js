@@ -158,11 +158,11 @@ function game() {
         if (player_dim.right >= space_dim.left) {
             if (space.coin) {
                 space.coin = false;
-                space._el.empty();
+                // space._el.empty();
 
                 this.coins += 1;
                 this.set_coins(this.coins);
-                this.sounds.coins.play();
+                // this.sounds.coins.play();
             } else if (space.shield) {
                 space.shield = false;
                 space._el.empty();
@@ -180,11 +180,6 @@ function game() {
         if (g.player.top() >= g.box.height() - g.player.height() - 1) {
             this.game_over = true;
         }
-
-        // for (var i = 0; i < this.pipes.length; i++) {
-        //     var pipe = this.pipes[i];
-            
-        // }
 
         if (this.game_over) {
             clearInterval(this.game_interval_id);
