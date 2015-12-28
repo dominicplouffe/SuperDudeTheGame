@@ -162,7 +162,7 @@ function game() {
 
                 this.coins += 1;
                 this.set_coins(this.coins);
-                // this.sounds.coins.play();
+                this.sounds.coins.play();
             } else if (space.shield) {
                 space.shield = false;
                 space._el.empty();
@@ -289,7 +289,7 @@ function game() {
 
     //SOUND
     this.sounds = {
-        'coins': new Audio('sounds/coin.wav'),
+        'coins': new Audio('sounds/coin.mp3'),
         'shields': new Audio('sounds/shield.wav'),
     };
 
