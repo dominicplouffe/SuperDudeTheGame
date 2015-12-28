@@ -105,6 +105,9 @@ function game() {
                 pipe_down.parentNode.removeChild(pipe_down);
                 space.parentNode.removeChild(space);
             }
+
+            this.colide_with_pipes(this.player, pipe[0], pipe[1]);
+            this.colide_with_space(this.player, pipe[2]);
         }
     };
 
@@ -150,28 +153,28 @@ function game() {
     };
 
     this.colide_with_space = function(player, space) {
-        // var player_dim = this.get_dimension(player);
-        // var space_dim = this.get_dimension(space);
+        var player_dim = this.get_dimension(player);
+        var space_dim = this.get_dimension(space);
 
-        // if (player_dim.right >= space_dim.left) {
-        //     if (space.coin) {
-        //         space.coin = false;
-        //         space._el.empty();
+        if (player_dim.right >= space_dim.left) {
+            if (space.coin) {
+                space.coin = false;
+                space._el.empty();
 
-        //         this.coins += 1;
-        //         this.set_coins(this.coins);
-        //         this.sounds.coins.play();
-        //     } else if (space.shield) {
-        //         space.shield = false;
-        //         space._el.empty();
+                this.coins += 1;
+                this.set_coins(this.coins);
+                this.sounds.coins.play();
+            } else if (space.shield) {
+                space.shield = false;
+                space._el.empty();
 
-        //         this.is_invisible = true;
-        //         this.sounds.shields.play();
+                this.is_invisible = true;
+                this.sounds.shields.play();
 
-        //         this.player._el.addClass('player_shield');
-        //         this.invisible_start = new Date();
-        //     }
-        // }
+                this.player._el.addClass('player_shield');
+                this.invisible_start = new Date();
+            }
+        }
     };
 
     this.is_game_over = function() {
@@ -179,11 +182,10 @@ function game() {
             this.game_over = true;
         }
 
-        for (var i = 0; i < this.pipes.length; i++) {
-            var pipe = this.pipes[i];
-            // this.colide_with_pipes(this.player, pipe[0], pipe[1]);
-            this.colide_with_space(this.player, pipe[2]);
-        }
+        // for (var i = 0; i < this.pipes.length; i++) {
+        //     var pipe = this.pipes[i];
+            
+        // }
 
         if (this.game_over) {
             clearInterval(this.game_interval_id);
