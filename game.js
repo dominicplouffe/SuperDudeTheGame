@@ -181,7 +181,7 @@ function game() {
 
         for (var i = 0; i < this.pipes.length; i++) {
             var pipe = this.pipes[i];
-            // this.colide_with_pipes(this.player, pipe[0], pipe[1]);
+            this.colide_with_pipes(this.player, pipe[0], pipe[1]);
             // this.colide_with_space(this.player, pipe[2]);
         }
 
