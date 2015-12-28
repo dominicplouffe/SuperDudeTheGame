@@ -58,11 +58,17 @@ function ui_element(el, top, left, height, width, zIndex, game) {
     };
 
     this.shoot = function() {
-        $('#bullet').css('left', this.dimension.right + 'px');
-        $('#bullet').css('top', (this.dimension.top) + 'px');
-        $('#bullet').show();
 
-        this._game.shoot = true;
+        if (this._game.number_of_bullets > 0)
+        {
+            $('#bullet').css('left', this.dimension.right + 'px');
+            $('#bullet').css('top', (this.dimension.top) + 'px');
+            $('#bullet').show();
+
+            this._game.number_of_bullets -= 1;
+            this._game.render_bullets();
+            this._game.shoot = true;
+        }
     };
 
     this.jump = function(direction) {

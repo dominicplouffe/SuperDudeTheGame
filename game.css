@@ -152,17 +152,23 @@
 }
 
 #bullet {
+    position: absolute;
+    display: none;
+}
+
+.bullet {
     width: 32px;
     height: 32px;
-    /*background-color: purple;*/
-    display: none;
     z-index: 1000;
-    position: absolute;
     background-image: url(images/bullet.png);
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
+    position: absolute;
+}
+
+#bullets {
+    position: absolute;
+    height: 32px;
+    bottom: -6px;
+    width: 100px;
 }
 
 .player_shield {
