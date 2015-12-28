@@ -62,7 +62,7 @@ function game() {
         var pipe_down = new ui_element($('#' + pipe_id_down), 0, 0, pipe_height, 60, g.zIndex, g);
         $('#inner_' + pipe_id_down).css('height', pipe_height);
 
-        var top = g.box.height() - pipe_down.height();
+        var top = g.box.height() - pipe_down.height() - this.floor_height;
         pipe_down._el.css('left', left + 'px');
         pipe_down._el.css('top', top + 'px');
         pipe_down.set_dimension();
@@ -76,7 +76,7 @@ function game() {
         pipe_up.set_dimension();
 
         //Space
-        var space_height = this.box.height() - pipe_up.height() - pipe_down.height();
+        var space_height = this.box.height() - pipe_up.height() - pipe_down.height() - this.floor_height;
         var space = new ui_element($('#' + space_id), pipe_height - 26, 0, space_height, 60, g.zIndex, g);
         space._el.css('left', left + 'px');
         space.set_dimension();
@@ -299,6 +299,8 @@ function game() {
     this.background = new ui_element($('#background'), 0, 0, '100%', '100%', 1, this);
     this.background2 = new ui_element($('#background2'), 0, 1100, 250, 550, 2, this);
     this.player = new ui_element($('#player'), 115, 75, 30, 40, 3, this);
+
+    this.floor_height = parseInt($('#floor').css('height'), 10);
 
     this.barrier = this.get_barrier(this.box, this.player);
     this.in_jump = false;
