@@ -158,17 +158,17 @@ function game() {
         if (player_dim.right >= space_dim.left) {
             if (space.coin) {
                 space.coin = false;
-                // space._el.empty();
+                space._el.empty();
 
                 this.coins += 1;
                 this.set_coins(this.coins);
-                this.sounds.coins.play();
+                // this.sounds.coins.play();
             } else if (space.shield) {
                 space.shield = false;
                 space._el.empty();
 
                 this.is_invisible = true;
-                this.sounds.shields.play();
+                //this.sounds.shields.play();
 
                 this.player._el.addClass('player_shield');
                 this.invisible_start = new Date();
