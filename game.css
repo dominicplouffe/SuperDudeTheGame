@@ -6,7 +6,7 @@
 .aspectwrapper {
 width: 100vw; 
     height: 56.25vw; /* height:width ratio = 9/16 = .5625  */
-    background: pink;
+    background: #fff;
     max-height: 100vh;
     max-width: 177.78vh; /* 16/9 = 1.778 */
     margin: auto;
@@ -17,7 +17,7 @@ width: 100vw;
 
 #box {
     position: absolute;
-    b/*ackground-image: url(http://i.imgur.com/HwvK2FJ.png);*/
+    /*background-image: url(http://i.imgur.com/HwvK2FJ.png);*/
     background-size:cover;
     top: 0; bottom: 0; right: 0; left: 0;
 }
@@ -121,4 +121,8 @@ width: 100vw;
     bottom: 0;
     height: 50px;
     width: 50px;
+}
+
+#debug {
+    width: 25%; height: 50%; z-index: 5; border: 1px solid #000; background-color: #FFF; margin-top: 25%;
 }
