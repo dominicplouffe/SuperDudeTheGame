@@ -295,39 +295,41 @@ function game() {
     this.zIndex = 10;
     this.pipes = [];
 
-    $('.click_box').on('touchstart',function (e){
-        var is_left = $(this).hasClass('left');
-        if (!g.game_over){
-            if (is_left) {
-                g.player.jump(UP);
-            } else {
-                g.player.jump(DOWN);
+    if ($.browser.mobile) {
+        $('.click_box').on('touchstart',function (e){
+            var is_left = $(this).hasClass('left');
+            if (!g.game_over){
+                if (is_left) {
+                    g.player.jump(UP);
+                } else {
+                    g.player.jump(DOWN);
+                }
+                
             }
-            
-        }
-    });
+        });
+    } else {
+        $('body').keydown(function(e) {
+            if (!g.game_over){
+                if (e.keyCode == UP) {
+                    g.player.jump(UP);
+                } else if (e.keyCode == DOWN) {
+                    g.player.jump(DOWN);
+                }
+            }
+        }); 
+    }
     
-    $('body').keydown(function(e) {
-        if (!g.game_over){
-            if (e.keyCode == UP) {
-                g.player.jump(UP);
-            } else if (e.keyCode == DOWN) {
-                g.player.jump(DOWN);
-            }
-        }
-    });
-
-    $('.click_box').on('click', function(e) {
-        var is_left = $(this).hasClass('left');
-        if (!g.game_over){
-            if (is_left) {
-                g.player.jump(UP);
-            } else {
-                g.player.jump(DOWN);
-            }
+    // $('.click_box').on('click', function(e) {
+    //     var is_left = $(this).hasClass('left');
+    //     if (!g.game_over){
+    //         if (is_left) {
+    //             g.player.jump(UP);
+    //         } else {
+    //             g.player.jump(DOWN);
+    //         }
             
-        }
-    });
+    //     }
+    // });
 
     $('#start_button').css('left', (this.box.width() / 2) - (parseInt($('#start_button').css('width'), 10) / 2 ));
     $('#start_button').css('top', (this.box.height() / 2) - (parseInt($('#start_button').css('height'), 10) / 2 ));
