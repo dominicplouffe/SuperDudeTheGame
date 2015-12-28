@@ -414,7 +414,9 @@ function game() {
     this.set_highscore(this.highscore);
     this.render_bullets();
 
-    if ($.browser.mobile) {
+    var isiPad = navigator.userAgent.match(/iPad/i) != null;
+
+    if ($.browser.mobile || isiPad) {
         $('.click_box').on('touchstart',function (e){
             var is_left = $(this).hasClass('left');
             var is_right = $(this).hasClass('right-bottom');
