@@ -150,8 +150,8 @@ function game() {
     };
 
     this.colide_with_space = function(player, space) {
-        var player_dim = this.get_dimension(player);
-        var space_dim = this.get_dimension(space);
+        // var player_dim = this.get_dimension(player);
+        // var space_dim = this.get_dimension(space);
 
         // if (player_dim.right >= space_dim.left) {
         //     if (space.coin) {
