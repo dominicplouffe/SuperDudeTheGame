@@ -163,6 +163,7 @@ function game() {
                 this.coins += 1;
                 this.set_coins(this.coins);
                 // this.sounds.coins.play();
+                $(".coin_audio").trigger('play');
             } else if (space.shield) {
                 space.shield = false;
                 space._el.empty();
