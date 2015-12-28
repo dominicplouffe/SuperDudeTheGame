@@ -242,7 +242,7 @@ function game() {
         this.add_debug('done player');
 
         this.game_interval_id = setInterval(function() { game_instance.animate();}, 10);
-        // this.coin_interval_id = setInterval(function() { game_instance.animate_coin();}, 100);
+        this.coin_interval_id = setInterval(function() { game_instance.animate_coin();}, 100);
 
         this.add_debug('intervals => ' + this.game_interval_id + ' ' + this.coin_interval_id);
         this.game_over = false;
