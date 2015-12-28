@@ -268,7 +268,7 @@ function game() {
     this.add_objects_to_space = function(space) {
         random_val = Math.floor(Math.random() * 4);
 
-        if (random_val === 1 || true) {
+        if (random_val === 1) {
             space._el.html('<div class="coin"></div>');
             space.coin = true;
             return;
