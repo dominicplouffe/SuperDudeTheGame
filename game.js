@@ -143,7 +143,7 @@ function game() {
             }
         }
 
-        if (pipe_down_dim.right < player_dim.left && !pipe_down.counted) {
+        if (pipe_down_dim.left + pipe_down_dim.width < player_dim.left && !pipe_down.counted) {
             pipe_down.counted = true;
             this.points += 1;
             this.set_points(this.points);
