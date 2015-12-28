@@ -124,5 +124,6 @@ width: 100vw;
 }
 
 #super_dude_debug {
-    width: 200px; height: 200px; z-index: 5; border: 1px solid #000; background-color: #FFF; margin-top: 25%;
+    width: 200px; height: 200px; z-index: 5; border: 1px solid #000; background-color: #FFF;
+    position: absolute;
 }
