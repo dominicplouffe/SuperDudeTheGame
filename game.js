@@ -265,10 +265,10 @@ function game() {
     };
 
     this.add_debug = function(txt) {
-        var html = $('#debug').html();
+        var html = $('#super_dude_debug').html();
         html += txt + '<br/>';
 
-        $('#debug').html(html);
+        $('#super_dude_debug').html(html);
 
     };
 
