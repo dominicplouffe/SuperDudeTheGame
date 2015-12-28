@@ -20,9 +20,9 @@ function set_level(level, game) {
 
     if (game.level !== level) {
         $('#num_levels').html(level);
-        $('#level').show();
+        // $('#level').show();
 
-        setTimeout(function() { $('#level').hide(); }, 1000);
+        // setTimeout(function() { $('#level').hide(); }, 1000);
     }
 
     game.level = level;

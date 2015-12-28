@@ -253,7 +253,7 @@ function game() {
 
         this.set_coins(coins);
         this.set_points(0);
-        set_level(2, this);
+        set_level(1, this);
 
         this.add_debug('Inserting pipe');
 
