@@ -295,7 +295,7 @@ function game() {
     this.zIndex = 10;
     this.pipes = [];
 
-    $('.click_box').on('touch',function (e){
+    $('.click_box').on('touchstart',function (e){
         var is_left = $(this).hasClass('left');
         if (!g.game_over){
             if (is_left) {
