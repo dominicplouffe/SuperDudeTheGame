@@ -17,7 +17,7 @@ width: 100vw;
 
 #box {
     position: absolute;
-    background-image: url(http://i.imgur.com/HwvK2FJ.png);
+    b/*ackground-image: url(http://i.imgur.com/HwvK2FJ.png);*/
     background-size:cover;
     top: 0; bottom: 0; right: 0; left: 0;
 }
