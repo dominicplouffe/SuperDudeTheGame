@@ -4,7 +4,7 @@
 }
 
 .aspectwrapper {
-width: 100vw; 
+    width: 100vw; 
     height: 56.25vw; /* height:width ratio = 9/16 = .5625  */
     background: #fff;
     max-height: 100vh;
@@ -124,6 +124,6 @@ width: 100vw;
 }
 
 #super_dude_debug {
-    width: 200px; height: 200px; z-index: 5; border: 1px solid #000; background-color: #FFF;
+    width: 200px; height: 200px; z-index: 9999; border: 1px solid #000; background-color: #FFF;
     position: absolute;
 }
