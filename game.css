@@ -17,7 +17,7 @@ width: 100vw;
 
 #box {
     position: absolute;
-    /*background-image: url(http://i.imgur.com/HwvK2FJ.png);*/
+    background-image: url(http://i.imgur.com/HwvK2FJ.png);
     background-size:cover;
     top: 0; bottom: 0; right: 0; left: 0;
 }
@@ -124,5 +124,5 @@ width: 100vw;
 }
 
 #debug {
-    width: 25%; height: 50%; z-index: 5; border: 1px solid #000; background-color: #FFF; margin-top: 25%;
+    width: 200px; height: 200px; z-index: 5; border: 1px solid #000; background-color: #FFF; margin-top: 25%;
 }
