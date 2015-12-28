@@ -1,22 +1,14 @@
 function ui_element(el, top, left, height, width, zIndex, game) {
-    this._el = $(el);
-    this._el.css('top', top + 'px');
-    this._el.css('left', left + 'px');
-
-    if (height.indexOf && height.indexOf('%') > 0) {
-        this._el.css('height', height);
-        this._el.css('width', width);
-    } else {
-        this._el.css('height', height + 'px');
-        this._el.css('width', width + 'px');
-    }
-    
-
-    this._el.css('position','absolute');
-    this._el.css('overflow','hidden');
-    this._el.css('z-index', zIndex);
-
-    this._game = game;
+    this.set_dimension = function() {
+        this.dimension = {
+            'left': this.left(),
+            'right': this.left() + this.width(),
+            'top': this.top(),
+            'bottom': this.top() + this.height(),
+            'width': this.width(),
+            'height': this.height()
+        };
+    };
 
     this.top = function() {
         var top = parseInt(this._el.css('top'), 10);
@@ -46,6 +38,8 @@ function ui_element(el, top, left, height, width, zIndex, game) {
             return;
         }
 
+        this.dimension.top = top;
+        this.dimension.bottom = this.dimension.top + this.dimension.height;
         this._el.css('top', top + 'px');
     };
 
@@ -58,6 +52,8 @@ function ui_element(el, top, left, height, width, zIndex, game) {
             return;
         }
 
+        this.dimension.top = top;
+        this.dimension.bottom = this.dimension.top + this.dimension.height;
         this._el.css('top', top + 'px');
     };
 
@@ -118,4 +114,24 @@ function ui_element(el, top, left, height, width, zIndex, game) {
         //     this._game.jump_start = null;
         // }
     };
+
+    this._el = $(el);
+    this._el.css('top', top + 'px');
+    this._el.css('left', left + 'px');
+
+    if (height.indexOf && height.indexOf('%') > 0) {
+        this._el.css('height', height);
+        this._el.css('width', width);
+    } else {
+        this._el.css('height', height + 'px');
+        this._el.css('width', width + 'px');
+    }
+    
+
+    this._el.css('position','absolute');
+    this._el.css('overflow','hidden');
+    this._el.css('z-index', zIndex);
+    this.set_dimension();
+    
+    this._game = game;
 }

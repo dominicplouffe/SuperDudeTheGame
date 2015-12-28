@@ -65,6 +65,7 @@ function game() {
         var top = g.box.height() - pipe_down.height();
         pipe_down._el.css('left', left + 'px');
         pipe_down._el.css('top', top + 'px');
+        pipe_down.set_dimension();
 
         //Up Pipe
         pipe_height = this.box.height() - pipe_height - this.vertical_space;
@@ -72,11 +73,13 @@ function game() {
         $('#inner_' + pipe_id_up).css('height', pipe_height);
         pipe_up._el.css('left', left + 'px');
         pipe_up._el.rotate(180);
+        pipe_up.set_dimension();
 
         //Space
         var space_height = this.box.height() - pipe_up.height() - pipe_down.height();
         var space = new ui_element($('#' + space_id), pipe_height - 26, 0, space_height, 60, g.zIndex, g);
         space._el.css('left', left + 'px');
+        space.set_dimension();
         this.add_objects_to_space(space);
         
         g.pipe_count += 1;
@@ -88,14 +91,17 @@ function game() {
         for (var i = 0; i < this.pipes.length; i++) {
             var pipe = this.pipes[i];
 
-            var left = pipe[0].left();
+            var left = pipe[0].dimension.left;
             left -= this.pipe_move_rate;
             pipe[0]._el.css('left', left + 'px');
             pipe[1]._el.css('left', left + 'px');
             pipe[2]._el.css('left', left + 'px');
-            
 
-            if (left < 0 - pipe[0].width()) {
+            pipe[0].dimension.left = left;
+            pipe[1].dimension.left = left;
+            pipe[2].dimension.left = left;
+            
+            if (left < 0 - pipe[0].dimension.width) {
                 pipe = this.pipes.shift();
                 var pipe_up = pipe[0]._el[0];
                 var pipe_down = pipe[1]._el[0];
@@ -111,34 +117,27 @@ function game() {
         }
     };
 
-    this.get_dimension = function(el) {
-        return {
-            'left': el.left(),
-            'right': el.left() + el.width(),
-            'top': el.top(),
-            'bottom': el.top() + el.height()
-        };
-    };
-
     this.colide_with_pipes = function(player, pipe_down, pipe_up) {
 
-        var player_dim = this.get_dimension(player);
-        var pipe_down_dim = this.get_dimension(pipe_down);
-        var pipe_up_dim = this.get_dimension(pipe_up);
+        var player_dim = player.dimension;
+        var pipe_down_dim = pipe_down.dimension;
+        var pipe_up_dim = pipe_up.dimension;
 
         if (!this.is_invisible) {
-            if (pipe_down_dim.right > player_dim.right) {
-                if (player_dim.right - this.player_give > pipe_down_dim.left) {
+            if (pipe_down_dim.left + pipe_down_dim.width > player_dim.left + player_dim.width) {
+                if ((player_dim.left + player_dim.width) - this.player_give > pipe_down_dim.left) {
                     if (player_dim.bottom - this.player_give > pipe_down_dim.top) {
                         this.game_over = true;
                     }
                 }
             }
 
-            if (pipe_up_dim.right > player_dim.right) {
-                if (player_dim.right - this.player_give > pipe_up_dim.left) {
-                    if (player_dim.top < pipe_up_dim.bottom - this.player_give) {
-                        this.game_over = true;
+            if (pipe_up_dim.left + pipe_up_dim.width > player_dim.left + player_dim.width) {
+                if ((player_dim.left + player_dim.width) - this.player_give > pipe_up_dim.left) {
+                    if (player_dim.left < (player_dim.left + player_dim.width)) {
+                        if (player_dim.top < pipe_up_dim.bottom - this.player_give) {
+                            this.game_over = true;
+                        }
                     }
                 }
             }
@@ -153,8 +152,8 @@ function game() {
     };
 
     this.colide_with_space = function(player, space) {
-        var player_dim = this.get_dimension(player);
-        var space_dim = this.get_dimension(space);
+        var player_dim = player.dimension;
+        var space_dim = space.dimension;
 
         if (player_dim.right >= space_dim.left) {
             if (space.coin) {
@@ -318,9 +317,9 @@ function game() {
             var is_left = $(this).hasClass('left');
             if (!g.game_over){
                 if (is_left) {
-                    g.player.jump(UP);
-                } else {
                     g.player.jump(DOWN);
+                } else {
+                    g.player.jump(UP);
                 }
                 
             }
