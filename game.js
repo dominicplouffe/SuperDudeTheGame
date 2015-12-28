@@ -272,8 +272,8 @@ function game() {
     this.vertical_space = 60;
     this.horizontal_space = 100;
     this.player_give = 10;
-    this.rise_rate = 5;
-    this.fall_rate = 5;
+    this.rise_rate = 2;
+    this.fall_rate = 2;
     this.pipe_move_rate = 1;
     this.jump_height = 20;
     this.level = 0;
@@ -319,6 +319,13 @@ function game() {
                 
             }
         });
+
+        $('.click_box').on('touchend',function (e){
+            var is_left = $(this).hasClass('left');
+            if (!g.game_over){
+                g.player.stop_jump();
+            }
+        });
     } else {
         $('body').keydown(function(e) {
             if (!g.game_over){
@@ -328,20 +335,14 @@ function game() {
                     g.player.jump(DOWN);
                 }
             }
-        }); 
+        });
+
+        $('body').keyup(function(e) {
+            if (!g.game_over){
+                g.player.stop_jump();
+            }
+        });
     }
-    
-    // $('.click_box').on('click', function(e) {
-    //     var is_left = $(this).hasClass('left');
-    //     if (!g.game_over){
-    //         if (is_left) {
-    //             g.player.jump(UP);
-    //         } else {
-    //             g.player.jump(DOWN);
-    //         }
-            
-    //     }
-    // });
 
     $('#start_button').css('left', (this.box.width() / 2) - (parseInt($('#start_button').css('width'), 10) / 2 ));
     $('#start_button').css('top', (this.box.height() / 2) - (parseInt($('#start_button').css('height'), 10) / 2 ));

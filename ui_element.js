@@ -77,22 +77,17 @@ function ui_element(el, top, left, height, width, zIndex, game) {
         }
     };
 
+    this.stop_jump = function() {
+        this._game.in_jump = false;
+        this._game.jump_start = null;
+    }
+
     this._do_jump = function() {
 
         if (this._game.player.jump_direction == UP) {
             this._game.player.move_up();
-
-            if (this._game.player.top() <= this._game.jump_start - this._game.jump_height) {
-                this._game.in_jump = false;
-                this._game.jump_start = null;
-            }
         } else if (this._game.player.jump_direction == DOWN) {
             this._game.player.move_down();
-
-            if (this._game.player.top() >= this._game.jump_start + this._game.jump_height) {
-                this._game.in_jump = false;
-                this._game.jump_start = null;
-            }
         }
 
         //Check for border
@@ -103,16 +98,6 @@ function ui_element(el, top, left, height, width, zIndex, game) {
             this._game.in_jump = false;
             this._game.jump_start = null;
         }
-        
-        var g = this._game;
-
-        
-        // } else if (this._game.player.top() > this._game.jump_start - this._game.jump_height) {
-            
-        // } else {
-        //     this._game.in_jump = false;
-        //     this._game.jump_start = null;
-        // }
     };
 
     this._el = $(el);
