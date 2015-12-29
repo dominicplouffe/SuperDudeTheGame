@@ -57,12 +57,9 @@ function game() {
         var left = g.box.width() + 1;
 
         //Down Pipe
-        var up_down_max = this.box.height() / 2;
-        if (g.pipes.length > 0){
-            up_down_max = g.pipes[g.pipes.length-1][0].top() * this.pipe_height_diff;
-        }
-        
-        var pipe_height = 50 + Math.floor((Math.random() * (up_down_max - 26)) + 1);
+        var pipe_height = this.get_pipe_height(g);
+        this.last_pipe_height = pipe_height;
+
         var pipe_down = new ui_element($('#' + pipe_id_down), 0, 0, pipe_height, 60, g.zIndex, g);
         $('#inner_' + pipe_id_down).css('height', pipe_height);
 
@@ -73,7 +70,7 @@ function game() {
 
         //Up Pipe
         pipe_height = this.box.height() - pipe_height - this.vertical_space;
-        var pipe_up = new ui_element($('#' + pipe_id_up), 0, 0, pipe_height - 26, 60, g.zIndex, g);
+        var pipe_up = new ui_element($('#' + pipe_id_up), 0, 0, pipe_height - this.pipe_end_height, 60, g.zIndex, g);
         $('#inner_' + pipe_id_up).css('height', pipe_height);
         pipe_up._el.css('left', left + 'px');
         pipe_up._el.rotate(180);
@@ -81,7 +78,7 @@ function game() {
 
         //Space
         var space_height = this.box.height() - pipe_up.height() - pipe_down.height() - this.floor_height;
-        var space = new ui_element($('#' + space_id), pipe_height - 26, 0, space_height, 60, g.zIndex, g);
+        var space = new ui_element($('#' + space_id), pipe_height - this.pipe_end_height, 0, space_height, 60, g.zIndex, g);
         space._el.css('left', left + 'px');
         space.set_dimension();
         this.add_objects_to_space(space);
@@ -90,6 +87,37 @@ function game() {
         g.zIndex += 1;
         g.pipes.push([pipe_down, pipe_up, space]);
     };
+
+    this.get_pipe_height = function(g) {
+        var up_down_max = this.box.height() / 2;
+        if (g.pipes.length > 0){
+            up_down_max = g.pipes[g.pipes.length-1][0].top();
+        }
+    
+        var pipe_height = null;
+        if (g.pipe_count == 0) {
+            pipe_height = 0 + Math.floor((Math.random() * (up_down_max - this.pipe_end_height)) + 1);
+        } else {
+
+            var minimum_height = 50;
+            var maximum_height = 250;
+            var diff = 50 + Math.floor((Math.random() * 100));
+
+            if (g.pipe_count % 2 == 0) {
+                pipe_height = this.last_pipe_height + diff;
+            } else {
+                pipe_height = this.last_pipe_height - diff;
+            }
+
+            if (pipe_height < minimum_height) {
+                pipe_height = minimum_height;
+            } else if (pipe_height > up_down_max) {
+                pipe_height = up_down_max;
+            }   
+        }
+
+        return pipe_height;
+    }
 
     this.move_pipes = function() {
         for (var i = 0; i < this.pipes.length; i++) {
@@ -368,7 +396,6 @@ function game() {
     this.pipe_move_rate = 1;
     this.level = 0;
     this.points_per_level = 10;
-    this.pipe_height_diff = 0.2;
 
     this.jump_height = 20;
     this.number_of_bullets = 3;
@@ -388,6 +415,7 @@ function game() {
     this.pipe_count = 0;
     this.zIndex = 10;
     this.pipes = [];
+    this.last_pipe_height = 0;
 
     this.coins = localStorage.getItem('coins');
     if (this.coins === null) this.coins = 0; else this.coins = parseInt(this.coins, 10);
@@ -409,6 +437,7 @@ function game() {
     this.player = new ui_element($('#player'), 115, 75, 30, 40, 3, this);
     this.floor_height = parseInt($('#floor').css('height'), 10);
     this.barrier = this.get_barrier(this.box, this.player);
+    this.pipe_end_height = 26;
 
     this.set_coins(this.coins);
     this.set_highscore(this.highscore);

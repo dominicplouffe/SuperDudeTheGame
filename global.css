@@ -41,7 +41,7 @@ body {
 
 .button {
     padding: 20px;
-    font-size: 20px;
+    font-size: 16px;
     font-family: 'Press Start 2P', cursive;
     background-color: #eee;
     position: relative;
@@ -51,6 +51,6 @@ body {
     -moz-border-radius: 10px;
     border-radius: 10px;
 
-    width: 220px;
+    width: 180px;
     margin-top: 10px;
 }
