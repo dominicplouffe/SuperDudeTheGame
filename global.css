@@ -1,0 +1,56 @@
+* {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+input {
+    -webkit-user-select: auto !important;
+    -khtml-user-select: auto !important;
+    -moz-user-select: auto !important;
+    -ms-user-select: auto !important;
+    user-select: auto !important;
+}
+
+body {
+    background-color: #000;
+}
+
+.outer_info {
+    display: table;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    z-index: 9999;
+}
+
+.middle_info {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.inner_info {
+    margin-left: auto;
+    margin-right: auto; 
+    width: 100%;
+}
+
+.button {
+    padding: 20px;
+    font-size: 20px;
+    font-family: 'Press Start 2P', cursive;
+    background-color: #eee;
+    position: relative;
+    z-index: 9999;
+
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+
+    width: 220px;
+    margin-top: 10px;
+}

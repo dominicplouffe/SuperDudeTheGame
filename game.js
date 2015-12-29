@@ -153,9 +153,10 @@ function game() {
 
         if (pipe_down_dim.left + pipe_down_dim.width < player_dim.left && !pipe_down.counted) {
             pipe_down.counted = true;
+            
             this.points += 1;
             this.set_points(this.points);
-            set_level(parseInt(this.points / this.points_per_level, 10) + 1, this);
+            // set_level(parseInt(this.points / this.points_per_level, 10) + 1, this);
         }
     };
 
@@ -340,12 +341,11 @@ function game() {
 
         this.add_debug('intervals => ' + this.game_interval_id + ' ' + this.coin_interval_id);
         this.game_over = false;
-        this.level = 0;
+        // this.level = 0;
         this.number_of_bullets = 3;
 
         this.set_coins(this.coins);
         this.set_points(0);
-        set_level(1, this);
 
         this.render_bullets();
 
