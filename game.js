@@ -96,24 +96,32 @@ function game() {
     
         var pipe_height = null;
         if (g.pipe_count == 0) {
-            pipe_height = 0 + Math.floor((Math.random() * (up_down_max - this.pipe_end_height)) + 1);
+            pipe_height = 50 + Math.floor((Math.random() * (up_down_max - this.pipe_end_height)) + 1);
         } else {
 
-            var minimum_height = 50;
-            var maximum_height = 250;
-            var diff = 50 + Math.floor((Math.random() * 100));
+            var minimum_height = 75;
+            var maximum_height = this.last_pipe_height + this.max_pipe_height;
+            
+            while (true) {
+                var diff = minimum_height + Math.floor((Math.random() * 100));
 
-            if (g.pipe_count % 2 == 0) {
-                pipe_height = this.last_pipe_height + diff;
-            } else {
-                pipe_height = this.last_pipe_height - diff;
+                if (g.pipe_count % 2 == 0) {
+                    pipe_height = this.last_pipe_height + diff;
+                } else {
+                    pipe_height = this.last_pipe_height - diff;
+                }
+
+                if (pipe_height < minimum_height) {
+                    pipe_height = minimum_height + Math.floor(Math.random() * 50);
+                    break;
+                }
+
+                if (pipe_height < maximum_height) {
+                    break;
+                } else {
+                    continue;
+                }
             }
-
-            if (pipe_height < minimum_height) {
-                pipe_height = minimum_height;
-            } else if (pipe_height > up_down_max) {
-                pipe_height = up_down_max;
-            }   
         }
 
         return pipe_height;
@@ -204,7 +212,7 @@ function game() {
             var pipe_up_dim = pipe_up.dimension;
 
             if (bullet_right >= pipe_up_dim.left && !pipe_up.is_blown) {
-                if (bullet_top < pipe_up_dim.height) {
+                if (bullet_top < pipe_up_dim.height && !pipe_down.counted) {
                     this.shoot = false;
                     this.add_explosion(pipe_up);
                     bullet.hide();
@@ -212,7 +220,7 @@ function game() {
             }
 
             if (bullet_right >= pipe_down_dim.left && !pipe_down.is_blown) {
-                if (bullet_top > pipe_down_dim.top) {
+                if (bullet_top > pipe_down_dim.top && !pipe_down.counted) {
                     this.shoot = false;
                     this.add_explosion(pipe_down);
                     bullet.hide();
@@ -281,7 +289,7 @@ function game() {
 
     this.set_highscore = function(highscore) {
         $('#num_highscore').html(highscore);
-        localStorage.setItem('highscore', highscore);
+        localStorage.setItem('highscore' + this.level, highscore);
     };
 
     this.animate_coin = function() {
@@ -369,11 +377,14 @@ function game() {
 
         this.add_debug('intervals => ' + this.game_interval_id + ' ' + this.coin_interval_id);
         this.game_over = false;
-        // this.level = 0;
         this.number_of_bullets = 3;
 
         this.set_coins(this.coins);
         this.set_points(0);
+
+        this.highscore = localStorage.getItem('highscore' + this.level);
+        if (this.highscore === null) this.highscore = 0; else this.highscore = parseInt(this.highscore, 10);
+        this.set_highscore(this.highscore);
 
         this.render_bullets();
 
@@ -396,6 +407,7 @@ function game() {
     this.pipe_move_rate = 1;
     this.level = 0;
     this.points_per_level = 10;
+    this.max_pipe_height = 140;
 
     this.jump_height = 20;
     this.number_of_bullets = 3;
@@ -419,8 +431,8 @@ function game() {
 
     this.coins = localStorage.getItem('coins');
     if (this.coins === null) this.coins = 0; else this.coins = parseInt(this.coins, 10);
-    this.highscore = localStorage.getItem('highscore');
-    if (this.highscore === null) this.highscore = 0; else this.highscore = parseInt(this.highscore, 10);
+    this.highscore = 0;
+
 
     //SOUNDS
     this.sounds = {
@@ -440,7 +452,6 @@ function game() {
     this.pipe_end_height = 26;
 
     this.set_coins(this.coins);
-    this.set_highscore(this.highscore);
     this.render_bullets();
 
     var isiPad = navigator.userAgent.match(/iPad/i) != null;

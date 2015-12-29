@@ -73,9 +73,13 @@ function ui_element(el, top, left, height, width, zIndex, game) {
 
     this.jump = function(direction) {
         if (!this._game.in_jump) {
+            this.left_start = this._game.pipes[0][0].left();
+
             this._game.in_jump = true;
             this._game.jump_start = this._game.player.top();
             this._game.player.jump_direction = direction;
+        } else {
+
         }
     };
 
@@ -90,6 +94,11 @@ function ui_element(el, top, left, height, width, zIndex, game) {
             this._game.player.move_up();
         } else if (this._game.player.jump_direction == DOWN) {
             this._game.player.move_down();
+        }
+
+        if (this.left_start - this._game.pipes[0][0].left() >= 100) {
+            console.log(this._game.jump_start);
+            console.log(this._game.player.top());
         }
 
         //Check for border
