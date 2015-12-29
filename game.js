@@ -100,32 +100,27 @@ function game() {
         } else {
 
             var minimum_height = 75;
-            var maximum_height = this.last_pipe_height + this.max_pipe_height;
+            var maximum_height = this.box.dimension.height - 125;
             
-            while (true) {
-                var diff = minimum_height + Math.floor((Math.random() * 100));
+            var diff = minimum_height + Math.floor((Math.random() * 100));
 
-                if (g.pipe_count % 2 == 0) {
-                    pipe_height = this.last_pipe_height + diff;
-                } else {
-                    pipe_height = this.last_pipe_height - diff;
-                }
+            if (g.pipe_count % 2 == 0) {
+                pipe_height = this.last_pipe_height + diff;
+            } else {
+                pipe_height = this.last_pipe_height - diff;
+            }
 
-                if (pipe_height < minimum_height) {
-                    pipe_height = minimum_height + Math.floor(Math.random() * 50);
-                    break;
-                }
+            if (pipe_height < minimum_height) {
+                pipe_height = minimum_height + Math.floor(Math.random() * 50);
+            }
 
-                if (pipe_height < maximum_height) {
-                    break;
-                } else {
-                    continue;
-                }
+            if (pipe_height > maximum_height) {
+                pipe_height = maximum_height;
             }
         }
 
         return pipe_height;
-    }
+    };
 
     this.move_pipes = function() {
         for (var i = 0; i < this.pipes.length; i++) {
@@ -403,11 +398,10 @@ function game() {
 
     //CONFIGURATION OPTIONS
     this.vertical_space = 60;
-    this.horizontal_space = 100;
+    this.horizontal_space = 150;
     this.pipe_move_rate = 1;
     this.level = 0;
     this.points_per_level = 10;
-    this.max_pipe_height = 140;
 
     this.jump_height = 20;
     this.number_of_bullets = 3;
