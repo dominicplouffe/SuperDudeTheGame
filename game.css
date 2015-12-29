@@ -14,6 +14,10 @@ input {
     user-select: auto !important;
 }
 
+body {
+    background-color: #000;
+}
+
 #player_image {
     height: 30px;
     width: 100%;
