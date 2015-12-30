@@ -16,7 +16,7 @@ function game() {
 
         if (this.is_invisible) {
             var d = new Date();
-            if (d - this.invisible_start > 10000) {
+            if (d - this.invisible_start > this.shield_length) {
                 this.is_invisible = false;
                 this.invisible_start = null;
                 this.player._el.removeClass('player_shield');
@@ -100,7 +100,7 @@ function game() {
         } else {
 
             var minimum_height = 75;
-            var maximum_height = this.box.dimension.height - 125;
+            var maximum_height = this.box.dimension.height - 155;
             
             var diff = minimum_height + Math.floor((Math.random() * 100));
 
@@ -187,7 +187,7 @@ function game() {
             
             this.points += 1;
             this.set_points(this.points);
-            // set_level(parseInt(this.points / this.points_per_level, 10) + 1, this);
+            this.pipe_move_rate = this.level + parseInt(this.points / this.points_per_level, 10);
         }
     };
 
@@ -234,8 +234,8 @@ function game() {
                     space.coin = false;
                     space._el.empty();
 
-                    this.coins += 1;
-                    this.set_coins(this.coins);
+                    this.gp.coins += 1;
+                    this.set_coins(this.gp.coins);
                     this.sounds.coins.play();
                 } else if (space.shield) {
                     space.shield = false;
@@ -277,7 +277,7 @@ function game() {
 
     this.set_coins = function(coins) {
         this.coins = coins;
-        $('#num_coins').html(coins);
+        $('.num_coins').html(coins);
 
         localStorage.setItem('coins', coins);
     };
@@ -320,7 +320,7 @@ function game() {
         var g = this;
         var explosion = $(el._el.children()[0]);
         var background_pos = parseInt(explosion.css('background-position'), 10) + 64;
-        explosion.css('background-position', background_pos + 'px');        
+        explosion.css('background-position', background_pos + 'px');
 
         if (background_pos / 64 < 15) {
             setTimeout(function() { g.animate_explosion(el);}, 100);
@@ -352,18 +352,23 @@ function game() {
         }
 
         bullets.html(html);
-    }
+    };
 
     this.start_game = function() {
         $('.outer_info').hide();
         $('.in_game_element').hide();
+
+        this.gp = new game_player();
+        this.rise_rate = this.gp.rise_rate;
+        this.fall_rate = this.gp.fall_rate;
+        this.shield_length = this.gp.shield_length;
 
         this.add_debug('starting game');
 
         this.pipes = [];
         this.in_jump = false;
         this.jump_start = null;
-        this.player = new ui_element($('#player'), 115, 75, 30, 40, 3, this);
+        this.player = new ui_element($('#player'), 115, 75, 50, 50, 3, this);
 
         this.add_debug('done player');
 
@@ -374,8 +379,9 @@ function game() {
         this.game_over = false;
         this.number_of_bullets = 3;
 
-        this.set_coins(this.coins);
         this.set_points(0);
+
+        this.set_coins(this.gp.coins);
 
         this.highscore = localStorage.getItem('highscore' + this.level);
         if (this.highscore === null) this.highscore = 0; else this.highscore = parseInt(this.highscore, 10);
@@ -401,13 +407,14 @@ function game() {
     this.horizontal_space = 150;
     this.pipe_move_rate = 1;
     this.level = 0;
-    this.points_per_level = 10;
+    this.points_per_level = 50;
+    this.shield_length = 5000;
 
     this.jump_height = 20;
     this.number_of_bullets = 3;
     this.player_give = 10;
-    this.rise_rate = 2;
-    this.fall_rate = 2;
+    this.rise_rate = 1;
+    this.fall_rate = 1;
 
     //GAME VARIABLES
     this.game_interval_id = null;
@@ -423,10 +430,7 @@ function game() {
     this.pipes = [];
     this.last_pipe_height = 0;
 
-    this.coins = localStorage.getItem('coins');
-    if (this.coins === null) this.coins = 0; else this.coins = parseInt(this.coins, 10);
     this.highscore = 0;
-
 
     //SOUNDS
     this.sounds = {
@@ -445,7 +449,9 @@ function game() {
     this.barrier = this.get_barrier(this.box, this.player);
     this.pipe_end_height = 26;
 
-    this.set_coins(this.coins);
+    this.gp = new game_player();
+
+    this.set_coins(this.gp.coins);
     this.render_bullets();
 
     var isiPad = navigator.userAgent.match(/iPad/i) != null;

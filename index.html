@@ -35,7 +35,7 @@
                             </div>
                             <br/>
                             <button id="start_button" class="button">New Game</button>
-                            <button id="back_button" class="button">Menu</button>
+                            <button class="button back_button">Menu</button>
                         </div>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
                     <tr style="z-index: 999999;">
                         <td class="counters" id="coins_counter">
                             &nbsp;<span>Coins</span>
-                            <span id="num_coins">0</span>
+                            <span class="num_coins">0</span>
                         </td>
                         <td class="counters" id="points_counter">
                             <span>Points</span>
@@ -78,6 +78,46 @@
                     </div>
                 </div>
             </div>
+
+            <div id="character_box">
+                <table id="header">
+                    <tr style="z-index: 999999;">
+                        <td class="counters" id="coins_counter">
+                            &nbsp;<span>Coins</span>
+                            <span class="num_coins">0</span>
+                        </td>
+                    </tr>
+                </table>
+
+                <div id="title" style="margin-top: 100px; text-align: center;">
+                    <img src="images/SuperDude.png" id="title_image">Character
+                </div>
+                <br/>
+
+                <table class="table">
+                    <tr>
+                        <td>Speed Attribute</td>
+                        <td><span id="speed_cost">250</span> coins</td>
+                        <td>
+                            <button class="button_attribute increase speed" attribute="speed">+</button>
+                            <span id="speed_attribute_value">1</span>
+                            <button class="button_attribute decrease speed" attribute="speed">-</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Shield Strength</td>
+                        <td><span id="shield_cost">250</span> coins</td>
+                        <td>
+                            <button class="button_attribute increase" level="1" attribute="shield">+</button>
+                            <span id="shield_attribute_value">1</span>
+                            <button class="button_attribute decrease" level="1" attribute="shield">-</button>
+                        </td>
+                    </tr>
+                </table>
+
+                <button class="button back_button">Menu</button>
+                        
+            </div>
         </div>
 
         <script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
@@ -86,6 +126,7 @@
 
         <script src="ui_element.js"></script>
         <script src="levels.js"></script>
+        <script src="game_player.js"></script>
         <script src="game.js"></script>
         <script src="main.js"></script>
     </body>

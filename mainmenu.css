@@ -17,3 +17,38 @@
     margin-right: 10px;
     vertical-align: middle;
 }
+
+#character_box {
+    position: absolute;
+    background-image: url(images/backdrop.png);
+    background-size:cover;
+    top: 0; bottom: 0; right: 0; left: 0;
+    text-align: center;
+    display: none;
+}
+
+
+.table {
+    width: 100%;
+    margin-left: 30px;
+    padding-right: 30px;
+}
+
+
+.table td {
+    font-family: 'Press Start 2P', cursive;
+    color: #333;
+}
+
+.button_attribute {
+    padding: 2px;
+    font-size: 16px;
+    font-family: 'Press Start 2P', cursive;
+    background-color: #eee;
+    position: relative;
+    z-index: 9999;
+
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
