@@ -187,7 +187,7 @@ function game() {
             
             this.points += 1;
             this.set_points(this.points);
-            this.pipe_move_rate = this.level + parseInt(this.points / this.points_per_level, 10);
+            this.pipe_move_rate = this.default_move_rate + parseInt(this.points / this.points_per_level, 10);
         }
     };
 
@@ -276,7 +276,7 @@ function game() {
     };
 
     this.set_coins = function(coins) {
-        this.coins = coins;
+        this.gp.coins = coins;
         $('.num_coins').html(coins);
 
         localStorage.setItem('coins', coins);
@@ -378,9 +378,9 @@ function game() {
         this.add_debug('intervals => ' + this.game_interval_id + ' ' + this.coin_interval_id);
         this.game_over = false;
         this.number_of_bullets = 3;
+        this.pipe_move_rate = this.default_move_rate;
 
         this.set_points(0);
-
         this.set_coins(this.gp.coins);
 
         this.highscore = localStorage.getItem('highscore' + this.level);

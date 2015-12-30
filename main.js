@@ -61,6 +61,9 @@ function set_home_screen() {
 }
 
 function set_character_screen() {
+
+    player_instance = new game_player();
+    
     $('#box').hide();
     $('#character_box').show();
     $('#main_menu_box').hide();
