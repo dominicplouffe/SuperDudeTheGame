@@ -363,6 +363,11 @@ function game() {
         this.fall_rate = this.gp.fall_rate;
         this.shield_length = this.gp.shield_length;
 
+        if (this.level == 1 && this.rise_rate < 2) {
+            this.rise_rate = 2;
+            this.fall_rate = 2;
+        }
+
         this.add_debug('starting game');
 
         this.pipes = [];
