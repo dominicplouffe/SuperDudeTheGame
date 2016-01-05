@@ -50,7 +50,7 @@
     <gap:splash src="res/screen/ios/screen-iphone-landscape-960x640.png"                gap:platform="ios"     width="960"  height="640" />
     <gap:splash src="res/screen/ios/screen-iphone-iphone-landscape-1920x1080.png"       gap:platform="ios"     width="1920" height="1080" />
     <gap:splash src="res/screen/ios/screen-iphone-iphone-landscape-1334x760.png"        gap:platform="ios"     width="1334" height="760" />
-    <gap:splash src="res/screen/ios/screen-iphone-iphone-landscape-1136x640.png"        gap:platform="ios"     width="1136" height="640" />
-    <gap:splash src="res/screen/ios/screen-iphone-ipad-landscape.png"    gap:platform="ios"     width="1024" height="768" /> -->
+    <gap:splash src="res/screen/ios/screen-iphone-iphone-landscape-1136x640.png"        gap:platform="ios"     width="1136" height="640" /> -->
+    <gap:splash src="res/screen/ios/screen-iphone-ipad-landscape.png"    gap:platform="ios" />
 
 </widget>
