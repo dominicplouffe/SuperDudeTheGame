@@ -222,7 +222,7 @@ function game() {
                 }
             }
         }
-    }
+    };
 
     this.colide_with_space = function(player, space) {
         var player_dim = player.dimension;
@@ -236,13 +236,13 @@ function game() {
 
                     this.gp.coins += 1;
                     this.set_coins(this.gp.coins);
-                    this.sounds.coins.play();
+                    this.play_sound('coins');
                 } else if (space.shield) {
                     space.shield = false;
                     space._el.empty();
 
                     this.is_invisible = true;
-                    this.sounds.shields.play();
+                    this.play_sound('shields');
 
                     this.player._el.addClass('player_shield');
                     this.invisible_start = new Date();
@@ -352,6 +352,17 @@ function game() {
         }
 
         bullets.html(html);
+    };
+
+    this.play_sound = function(sound_name) {
+        var sound = this.sounds[sound_name];
+
+        // Reset the sound, then play it
+        if(sound.readyState) {
+            sound.pause();
+            sound.currentTime = 0;
+        }
+        sound.play();
     };
 
     this.start_game = function() {
